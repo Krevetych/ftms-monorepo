@@ -1,38 +1,38 @@
-services:
-  postgres:
-    image: postgres:16-alpine
-    container_name: postgres
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    ports:
-      - 5433:5432
-    healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER}']
-      interval: 10s
-      timeout: 5s
-      retries: 5
+  services:
+    postgres:
+      image: postgres:16-alpine
+      container_name: postgres
+      environment:
+        POSTGRES_USER: ${POSTGRES_USER}
+        POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+        POSTGRES_DB: ${POSTGRES_DB}
+      volumes:
+        - postgres_data:/var/lib/postgresql/data
+      ports:
+        - 5433:5432
+      healthcheck:
+        test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER}']
+        interval: 10s
+        timeout: 5s
+        retries: 5
 
-  backend:
-    build: .
-    container_name: nest-backend
-    environment:
-      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
-    ports:
-      - 8080:8080
-    depends_on:
-      postgres:
-        condition: service_healthy
-    command: >
-      sh -c "pnpx prisma migrate deploy &&
-             pnpm start:prod & 
-             sleep 5 && 
-             curl -s -X POST http://localhost:8080/api/auth/register?root=${ROOT} -H 'Content-Type: application/json' -d '{\"login\":\"завуч\",\"password\":\"admin\", \"isAdmin\": true}' && 
-             curl -s -X POST http://localhost:8080/api/auth/register?root=${ROOT} -H 'Content-Type: application/json' -d '{\"login\":\"бухгалтер\",\"password\":\"user\", \"isAdmin\": false}' &&
-             wait -n"
+    backend:
+      build: .
+      container_name: nest-backend
+      environment:
+        DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      ports:
+        - 8080:8080
+      depends_on:
+        postgres:
+          condition: service_healthy
+      command: >
+        sh -c "pnpx prisma migrate deploy &&
+              pnpm start:prod & 
+              sleep 5 && 
+              curl -s -X POST http://localhost:8080/api/auth/register?root=${ROOT} -H 'Content-Type: application/json' -d '{\"login\":\"завуч\",\"password\":\"admin\", \"isAdmin\": true}' && 
+              curl -s -X POST http://localhost:8080/api/auth/register?root=${ROOT} -H 'Content-Type: application/json' -d '{\"login\":\"бухгалтер\",\"password\":\"user\", \"isAdmin\": false}' &&
+              wait -n"
 
-volumes:
-  postgres_data:
+  volumes:
+    postgres_data:
