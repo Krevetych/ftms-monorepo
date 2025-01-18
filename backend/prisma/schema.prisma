@@ -1,0 +1,152 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Type {
+  NPO
+  BUDGET
+  NON_BUDGET
+}
+
+enum Term {
+  FIRST
+  SECOND
+}
+
+enum Course {
+  FIRST
+  SECOND
+  THIRD
+  FOURTH
+  INACTIVE
+}
+
+enum Rate {
+  SALARIED
+  HOURLY
+}
+
+enum Month {
+  JANUARY
+  FEBRUARY
+  MARCH
+  APRIL
+  MAY
+  JUNE
+  SEPTEMBER
+  OCTOBER
+  NOVEMBER
+  DECEMBER
+}
+
+enum MonthHalf {
+  FIRST
+  SECOND
+}
+
+model User {
+  id       String  @id @default(uuid()) @db.Uuid
+  login    String  @unique
+  password String
+  isAdmin  Boolean @default(false) @map("is_admin")
+
+  @@map("users")
+}
+
+model Group {
+  id        String  @id @default(uuid()) @db.Uuid
+  name      String  @unique
+  type      Type
+  course    Course
+  isDeleted Boolean @default(false) @map("is_deleted")
+
+  Plan Plan[]
+
+  @@map("groups")
+}
+
+model Teacher {
+  id        String  @id @default(uuid()) @db.Uuid
+  fio       String  @unique
+  isDeleted Boolean @default(false) @map("is_deleted")
+
+  Plan Plan[]
+
+  @@map("teachers")
+}
+
+model Object {
+  id        String  @id @default(uuid()) @db.Uuid
+  name      String  @unique
+  isDeleted Boolean @default(false) @map("is_deleted")
+
+  Plan Plan[]
+
+  @@map("objects")
+}
+
+model Subject {
+  id        String    @id @default(uuid()) @db.Uuid
+  month     Month
+  monthHalf MonthHalf @map("month_half")
+  hours     Int
+  planId    String    @map("plan_id") @db.Uuid
+
+  plan Plan @relation(fields: [planId], references: [id])
+
+  @@unique([month, monthHalf, planId])
+  @@map("subjects")
+}
+
+model SubjectTerm {
+  id     String @id @default(uuid()) @db.Uuid
+  term   Term
+  hours  Int
+  planId String @map("plan_id") @db.Uuid
+
+  plan Plan @relation(fields: [planId], references: [id])
+
+  @@unique([term, planId])
+  @@map("subject_terms")
+}
+
+model Plan {
+  id        String  @id @default(uuid()) @db.Uuid
+  year      String
+  rate      Rate
+  maxHours  Int     @map("max_hours")
+  worked    Int
+  isDeleted Boolean @default(false) @map("is_deleted")
+  objectId  String  @map("object_id") @db.Uuid
+  teacherId String  @map("teacher_id") @db.Uuid
+  groupId   String  @map("group_id") @db.Uuid
+
+  Subject     Subject[]
+  SubjectTerm SubjectTerm[]
+
+  Object  Object  @relation(fields: [objectId], references: [id])
+  teacher Teacher @relation(fields: [teacherId], references: [id])
+  group   Group   @relation(fields: [groupId], references: [id])
+
+  @@unique([year, objectId, groupId, teacherId])
+  @@map("plans")
+}
+
+model RevokedToken {
+  id  String @id @default(uuid()) @db.Uuid
+  jti String @unique
+
+  @@map("revoked_tokens")
+}
