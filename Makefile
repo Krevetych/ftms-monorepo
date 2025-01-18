@@ -48,3 +48,11 @@ frontend-build:
 .PHONY: frontend-logs
 frontend-logs:
 	docker-compose -f ${FRONTEND_DIR}/docker-compose.yaml logs
+
+.PHONY: clean-all
+clean-all:
+	@echo "Cleaning up Docker..."
+	docker builder prune -f
+	docker system prune -a -f --volumes
+	docker volume rm $(docker volume ls -q)
+	@echo "Docker cleanup completed."
