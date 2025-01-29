@@ -49,7 +49,7 @@ frontend-logs:
 	docker-compose -f ${FRONTEND_DIR}/docker-compose.yaml logs
 
 .PHONY: clear-all
-clean-all:
+clear-all:
 	@echo "Cleaning up Docker..."
 	@docker builder prune -f
 	@docker system prune -a -f --volumes
