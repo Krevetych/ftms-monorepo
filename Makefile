@@ -3,8 +3,8 @@ FRONTEND_DIR = frontend
 
 .PHONY: up
 up: 
-	docker-compose -f ${BACKEND_DIR}/docker-compose.yaml up -d
-	docker-compose -f ${FRONTEND_DIR}/docker-compose.yaml up -d
+	docker-compose -f ${BACKEND_DIR}/docker-compose.yaml up --build -d
+	docker-compose -f ${FRONTEND_DIR}/docker-compose.yaml up --build -d
 
 .PHONY: down
 down:
@@ -18,7 +18,7 @@ build:
 
 .PHONY: backend-up
 backend-up:
-	docker-compose -f ${BACKEND_DIR}/docker-compose.yaml up -d
+	docker-compose -f ${BACKEND_DIR}/docker-compose.yaml up --build -d
 
 .PHONY: backend-down
 backend-down:
@@ -34,7 +34,7 @@ backend-logs:
 
 .PHONY: frontend-up
 frontend-up:
-	docker-compose -f ${FRONTEND_DIR}/docker-compose.yaml up -d
+	docker-compose -f ${FRONTEND_DIR}/docker-compose.yaml up --build -d
 
 .PHONY: frontend-down
 frontend-down:
