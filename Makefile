@@ -4,9 +4,9 @@ FRONTEND_DIR = frontend
 .PHONY: up
 up: 
 	pnpm install --dir ${BACKEND_DIR} && \
-	docker-compose -f docker-compose.yaml up --build -d && \
+	docker-compose -f ${BACKEND_DIR}/docker-compose.yaml up --build -d && \
 	pnpm install --dir ${FRONTEND_DIR} && \
-	docker-compose -f docker-compose.yaml up --build -d
+	docker-compose -f ${FRONTEND_DIR}/docker-compose.yaml up --build -d
 
 .PHONY: down
 down:
@@ -16,9 +16,9 @@ down:
 .PHONY: build
 build:
 	pnpm install --dir ${BACKEND_DIR} && \
-	docker-compose -f docker-compose.yaml build && \
+	docker-compose -f ${BACKEND_DIR}/docker-compose.yaml build && \
 	pnpm install --dir ${FRONTEND_DIR} && \
-	docker-compose -f docker-compose.yaml build
+	docker-compose -f ${FRONTEND_DIR}/docker-compose.yaml build
 
 .PHONY: backend-up
 backend-up:
