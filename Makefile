@@ -3,9 +3,9 @@ FRONTEND_DIR = frontend
 
 .PHONY: up
 up: 
-	cd ${BACKEND_DIR} && pnpm install && \
+	pnpm install --dir ${BACKEND_DIR} && \
 	docker-compose -f docker-compose.yaml up --build -d && \
-	cd ../${FRONTEND_DIR} && pnpm install && \
+	pnpm install --dir ${FRONTEND_DIR} && \
 	docker-compose -f docker-compose.yaml up --build -d
 
 .PHONY: down
@@ -15,14 +15,14 @@ down:
 
 .PHONY: build
 build:
-	cd ${BACKEND_DIR} && pnpm install && \
+	pnpm install --dir ${BACKEND_DIR} && \
 	docker-compose -f docker-compose.yaml build && \
-	cd ${FRONTEND_DIR} && pnpm install && \
+	pnpm install --dir ${FRONTEND_DIR} && \
 	docker-compose -f docker-compose.yaml build
 
 .PHONY: backend-up
 backend-up:
-	cd ${BACKEND_DIR} && pnpm install && \
+	pnpm install --dir ${BACKEND_DIR} && \
 	docker-compose -f ${BACKEND_DIR}/docker-compose.yaml up --build -d
 
 .PHONY: backend-down
@@ -31,7 +31,7 @@ backend-down:
 
 .PHONY: backend-build
 backend-build:
-	cd ${BACKEND_DIR} && pnpm install && \
+	pnpm install --dir ${BACKEND_DIR} && \
 	docker-compose -f ${BACKEND_DIR}/docker-compose.yaml build
 
 .PHONY: backend-logs
@@ -40,7 +40,7 @@ backend-logs:
 
 .PHONY: frontend-up
 frontend-up:
-	cd ${FRONTEND_DIR} && pnpm install && \
+	pnpm install --dir ${FRONTEND_DIR} && \
 	docker-compose -f ${FRONTEND_DIR}/docker-compose.yaml up --build -d
 
 .PHONY: frontend-down
@@ -49,7 +49,7 @@ frontend-down:
 
 .PHONY: frontend-build
 frontend-build:
-	cd ${FRONTEND_DIR} && pnpm install && \
+	pnpm install --dir ${FRONTEND_DIR} && \
 	docker-compose -f ${FRONTEND_DIR}/docker-compose.yaml build
 
 .PHONY: frontend-logs
