@@ -5,7 +5,7 @@ FRONTEND_DIR = frontend
 up: 
 	cd ${BACKEND_DIR} && pnpm install && \
 	docker-compose -f docker-compose.yaml up --build -d && \
-	cd ${FRONTEND_DIR} && pnpm install && \
+	cd ../${FRONTEND_DIR} && pnpm install && \
 	docker-compose -f docker-compose.yaml up --build -d
 
 .PHONY: down
